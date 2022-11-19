@@ -22,24 +22,24 @@ int checkInPoweredFlight(float altitude)
 
 // This detects fuel burnout
 // if z-acceleration is less than or equals 2m/s^2
-int checkForBurnOut(float acceleration)
-{
-    if (acceleration <= 2)
-    {
-        return COASTING_STATE;
-    }
-    else
-    {
-        return POWERED_FLIGHT_STATE;
-    }
-}
+// int checkForBurnOut(float acceleration)
+// {
+//     if (acceleration <= 2)
+//     {
+//         return COASTING_STATE;
+//     }
+//     else
+//     {
+//         return POWERED_FLIGHT_STATE;
+//     }
+// }
 
 // This checks that we have reached apogee
 // At apogee velocity is zero so we check for velocity less than or equal to zero
 // As redundancy we check if previous altitude is greater than current altitude
 int checkForApogee(float velocity, float currentAltitude, float previousAltitude)
 {
-    if (currentAltitude < previousAltitude)
+    if ((previousAltitude-currentAltitude) >5)
     {
 
         MAX_ALTITUDE = currentAltitude;
@@ -52,7 +52,7 @@ int checkForApogee(float velocity, float currentAltitude, float previousAltitude
     }
     else
     {
-        return COASTING_STATE;
+        return POWERED_FLIGHT_STATE;
     }
 }
 
@@ -101,8 +101,8 @@ int checkState(float currentAltitude, float previousAltitude, float velocity, fl
     case PRE_FLIGHT_GROUND_STATE:
         return checkInPoweredFlight(currentAltitude);
     case POWERED_FLIGHT_STATE:
-        return checkForBurnOut(acceleration);
-    case COASTING_STATE:
+        // return checkForBurnOut(acceleration);
+        // case COASTING_STATE:
         return checkForApogee(velocity, currentAltitude, previousAltitude);
     case BALLISTIC_DESCENT_STATE:
         return deployChute(currentAltitude);

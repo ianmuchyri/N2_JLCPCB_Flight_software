@@ -3,9 +3,10 @@
 
 #include "defs.h"
 
-//void init_gps();
+void init_gps();
 
 void init_mpu();
+void init_dps();
 
 //void init_bmp();
 
@@ -15,7 +16,7 @@ void init_sensors();
 
 // String ConvertLng(String nmea[15]);
 
-// struct GPSReadings get_gps_readings();
+struct GPSReadings get_gps_readings();
 
 struct SensorReadings get_readings();
 

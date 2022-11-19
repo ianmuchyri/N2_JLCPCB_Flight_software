@@ -20,7 +20,7 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
 
   // If a message is received on the topic esp32/output, you check if the message is either "on" or "off".
   // Changes the output state according to the message
-  if (String(topic) == "esp32/ejection")
+  if (String(topic) == "controls/ejection")
   {
     debug("Changing output to ");
     if (messageTemp == "on")
@@ -89,7 +89,7 @@ void reconnect()
     {
       debugln("connected to Mosquitto server");
       // Subscribe
-      client.subscribe("esp32/ejection");
+      client.subscribe("controls/ejection");
     }
     else
     {

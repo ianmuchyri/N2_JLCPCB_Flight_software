@@ -4,14 +4,17 @@
 #include <Adafruit_Sensor.h>
 #include <SoftwareSerial.h>
 #include "readsensors.h"
+#include <TinyGPS++.h>
 
+TinyGPSPlus gps;
 // using uart 2 for serial communication
 // SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN);
 
-// void init_gps()
-// {
-//     GPSModule.begin(GPS_BAUD_RATE);
-// }
+void init_gps()
+{
+    // GPSModule.begin(GPS_BAUD_RATE);
+    Serial1.begin(9600, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
+}
 
 Adafruit_MPU6050 mpu;
 Adafruit_DPS310 dps;
@@ -88,7 +91,7 @@ void init_dps()
 // function to initialize bmp, mpu, and the sd card module
 void init_sensors()
 {
-    // init_gps();
+    init_gps();
     // init_bmp();
     init_dps();
     init_mpu();
@@ -168,6 +171,7 @@ void init_sensors()
 //     GPSModule.flush();
 //     while (GPSModule.available() > 0)
 //     {
+//         // debugln("here");
 //         GPSModule.read();
 //     }
 //     if (GPSModule.find("$GPRMC,"))
@@ -196,6 +200,27 @@ void init_sensors()
 //     return gpsReadings;
 // }
 
+// get gps readings from the sensor
+struct GPSReadings get_gps_readings()
+{
+    struct GPSReadings gpsReadings;
+  
+    while (Serial1.available() > 0)
+    {
+        // debugln("yes here");
+        // debugln(Serial1.read());
+        gps.encode(Serial1.read());
+        if (gps.location.isUpdated())
+        {
+            // latitude in degrees
+            gpsReadings.latitude = gps.location.lat();
+            gpsReadings.longitude = gps.location.lng();
+            // debugln(gpsReadings.longitude);
+        }
+    }
+    return gpsReadings;
+}
+
 // Get the sensor readings
 struct SensorReadings get_readings()
 {
@@ -203,17 +228,16 @@ struct SensorReadings get_readings()
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
     // return_val.altitude = bmp.readAltitude(SEA_LEVEL_PRESSURE);
-       // return_val.temperature=bmp.readTemperature();
+    // return_val.temperature=bmp.readTemperature();
     return_val.ax = a.acceleration.x;
     return_val.ay = a.acceleration.y;
     return_val.az = a.acceleration.z;
     return_val.gx = g.gyro.x;
     return_val.gy = g.gyro.y;
     return_val.gz = g.gyro.z;
-    return_val.temperature= temp.temperature;
-    
-   return_val.altitude= dps.readAltitude(SEA_LEVEL_PRESSURE);
-   
+    return_val.temperature = temp.temperature;
+
+    return_val.altitude = dps.readAltitude(SEA_LEVEL_PRESSURE);
 
     // check readings from mpu6050
     //  debug("ax: ");
