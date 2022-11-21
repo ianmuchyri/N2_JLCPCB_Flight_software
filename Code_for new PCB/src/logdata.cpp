@@ -3,6 +3,10 @@
 #include "SD.h"
 #include <SPI.h>
 #include "logdata.h"
+#include <serial-readline.h>
+
+
+SerialLineReader FC_reader(FC);
 
 File dataFile;
 
@@ -81,4 +85,27 @@ void appendToFile(Data ld[5])
     }
 
     dataFile.close();
+}
+
+void GetAndAppendFlightControlData(void) {
+    FC_reader.poll();
+	if(FC_reader.available()) {
+		char text[FC_reader.len()];
+		FC_reader.read(text);
+        dataFile = SD.open("/FC.txt", FILE_APPEND);
+        if (!dataFile)
+        {
+            debugln("Failed to open file for appending");
+            return;
+        }
+        if (dataFile.println(text))
+        {
+            debugln("Message appended");
+        }
+        else
+        {
+            debugln("Append failed");
+        }
+        dataFile.close();
+	    }
 }
