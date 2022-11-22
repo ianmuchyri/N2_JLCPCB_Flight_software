@@ -58,8 +58,8 @@ extern const BaseType_t app_cpu;
 #define password "987654321"
 
 // MQTT Broker IP address
-#define mqtt_server "192.168.0.100"
-// #define mqtt_server "192.168.254.149"
+// #define mqtt_server "192.168.0.100"
+#define mqtt_server "10.4.43.37 "
 #define MQTT_BUFFER_SIZE 300
 #define MQQT_PORT 1883
 

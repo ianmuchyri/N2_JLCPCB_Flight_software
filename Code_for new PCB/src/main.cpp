@@ -226,7 +226,7 @@ void setup()
   // create_Accesspoint();
   init_sensors();
 
-  // initSDCard();
+  initSDCard();
 
   // get the base_altitude
   BASE_ALTITUDE = get_base_altitude();
@@ -239,7 +239,7 @@ void setup()
   xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 3000, NULL, 1, &GetDataTaskHandle, 0);
   xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
   xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);
-  // xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
+  xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
 
   vTaskDelete(NULL);
 }
