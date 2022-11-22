@@ -71,6 +71,11 @@ struct Data readData()
   portENTER_CRITICAL(&mutex);
  state = checkState(filtered_values.displacement, previousAltitude, filtered_values.velocity, filtered_values.acceleration, state);
   portEXIT_CRITICAL(&mutex);
+  if (state == 1) {
+    digitalWrite(FC_STATE, HIGH);
+  }else{
+    digitalWrite(FC_STATE, LOW);
+  }
  previousAltitude = filtered_values.displacement;
 
   ld = formart_data(readings, filtered_values);
@@ -204,6 +209,7 @@ void SDWriteTask(void *parameter)
                 longitude = gps.longitude;
             }
         }
+        GetAndAppendFlightControlData();
 
         appendToFile(ldRecords);
 
@@ -217,10 +223,14 @@ void setup()
 
   Serial.begin(BAUD_RATE);
 
+  FC.begin(9600, SERIAL_8N1, FC_RX, FC_TX);
+
   // set up ejection pin
   pinMode(EJECTION_PIN, OUTPUT);
   // set up buzzer pin
   pinMode(buzzer_pin, OUTPUT);
+
+  pinMode(FC_STATE, OUTPUT);
 
   setup_wifi();
   // create_Accesspoint();
