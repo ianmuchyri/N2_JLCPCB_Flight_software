@@ -230,6 +230,8 @@ void setup()
   // set up buzzer pin
   pinMode(buzzer_pin, OUTPUT);
 
+  pinMode(FC_STATE, OUTPUT);
+
   setup_wifi();
   // create_Accesspoint();
   init_sensors();
